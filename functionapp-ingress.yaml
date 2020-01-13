@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: function-helloworld
+  namespace: ingress-nginx
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - host: function-helloworld.eastus2.cloudapp.azure.com
+    http:
+      paths:           
+      - path: /helloworld(/|$)(.*)
+        backend:
+          serviceName: function-helloworld-http
+          servicePort: 80
+        
