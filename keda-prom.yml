@@ -1,0 +1,21 @@
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: prometheus-scaledobject
+  namespace: ingress-nginx
+  labels:
+    deploymentName: function-helloworld-http
+spec:
+  scaleTargetRef:
+    deploymentName: function-helloworld-http
+  pollingInterval: 15
+  cooldownPeriod:  30
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus-server.ingress-nginx.svc.cluster.local:9090
+      metricName: access_frequency
+      threshold: '1'
+      query: sum(rate(nginx_ingress_controller_requests[1m]))
